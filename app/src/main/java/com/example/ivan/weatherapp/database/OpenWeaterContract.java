@@ -10,7 +10,7 @@ public class OpenWeaterContract {
 
     public OpenWeaterContract(){}
 
-    public static abstract class CityEnry implements BaseColumns{
+    public static abstract class CityEntry implements BaseColumns{
         public static final String TABLE_NAME = "_table";
         public static final String COLUMN_ID = "_id";
         public static final String COLUMN_CITY_NAME = "city_name";
