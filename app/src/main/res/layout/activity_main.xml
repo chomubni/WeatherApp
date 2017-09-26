@@ -49,10 +49,11 @@
                             />
                     </LinearLayout>
                     <TextView
-                        android:id="@+id/wether_info"
+                        android:id="@+id/weather_info"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:gravity="center"
                         />
                     <Button
                         android:id="@+id/get_weather"

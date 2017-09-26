@@ -1,11 +1,16 @@
 package com.example.ivan.weatherapp.network;
 
 import android.app.IntentService;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.widget.Toast;
 
 import com.example.ivan.weatherapp.MainActivity;
+import com.example.ivan.weatherapp.database.OpenWeaterContract;
+import com.example.ivan.weatherapp.database.OpenWeatherHelper;
 import com.example.ivan.weatherapp.model.CityWeather;
 import com.example.ivan.weatherapp.model.Main;
 import com.example.ivan.weatherapp.model.Weather;
@@ -17,6 +22,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import static com.example.ivan.weatherapp.MainActivity.WEATHER_ACTION;
+import static com.example.ivan.weatherapp.database.OpenWeaterContract.*;
 
 /**
  * Created by ivan on 25.09.17.
@@ -29,6 +35,8 @@ public class OpenWeatherService extends IntentService {
     public static final String EXTRA_CITY_MIN_TEMP = "min_temp";
     public static final String EXTRA_CITY_MAX_TEMP = "max_temp";
     public static final String EXTRA_WEATHER_ICON_ID = "weather_icon_id";
+    private OpenWeatherHelper mOpenWeatherHelper;
+    SQLiteDatabase mDatabase;
 
     String mCityName = null;
 
@@ -39,6 +47,8 @@ public class OpenWeatherService extends IntentService {
     @Override
     public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
         mCityName = intent.getStringExtra(MainActivity.EXTRA_CITY_NAME);
+        mOpenWeatherHelper = new OpenWeatherHelper(getApplicationContext());
+        mDatabase = mOpenWeatherHelper.getWritableDatabase();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -57,13 +67,23 @@ public class OpenWeatherService extends IntentService {
                 CityWeather cityWeather = response.body();
                 List<Weather> list = cityWeather.getWeather();
                 Main main = cityWeather.getMain();
-                Intent intent = new Intent(WEATHER_ACTION);
+
                 String name = cityWeather.getName();
-                intent.putExtra(EXTRA_CITY_NAME, name);
-                intent.putExtra(EXTRA_CITY_MIN_TEMP, String.valueOf(main.getTempMin()));
-                intent.putExtra(EXTRA_CITY_MAX_TEMP, String.valueOf(main.getTempMax()));
-                intent.putExtra(EXTRA_WEATHER_ICON_ID, list.get(0).getIcon());
+                String tempMin = String.valueOf(main.getTempMin());
+                String tempMax = String.valueOf(main.getTempMax());
+                String iconId = list.get(0).getIcon();
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(CityEntry.COLUMN_CITY_NAME, name);
+                contentValues.put(CityEntry.COLUMN_TEMP_MIN, tempMin);
+                contentValues.put(CityEntry.COLUMN_TEMP_MAX, tempMax);
+                contentValues.put(CityEntry.COLUMN_ICON_ID, iconId);
+
+                Long id = mDatabase.insert(CityEntry.TABLE_NAME,null,contentValues);
+                Intent intent = new Intent(WEATHER_ACTION);
+                intent.putExtra("rowId",id);
                 sendBroadcast(intent);
+                mDatabase.close();
             }
 
             @Override
