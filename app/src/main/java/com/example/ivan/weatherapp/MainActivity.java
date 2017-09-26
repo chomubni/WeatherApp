@@ -1,11 +1,13 @@
 package com.example.ivan.weatherapp;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,7 +15,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.ivan.weatherapp.database.OpenWeaterContract;
 import com.example.ivan.weatherapp.database.OpenWeatherHelper;
 import com.example.ivan.weatherapp.network.OpenWeatherService;
 import com.squareup.picasso.Picasso;
@@ -23,7 +24,7 @@ import butterknife.ButterKnife;
 
 import static com.example.ivan.weatherapp.database.OpenWeaterContract.*;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     public static final String EXTRA_CITY_NAME = "name";
     public static final String WEATHER_ACTION = "com.example.ivan.weatherapp.action";
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         };
         IntentFilter intentFilter = new IntentFilter(WEATHER_ACTION);
         registerReceiver(broadcastReceiver,intentFilter);
-        startOpenWeatherServiceByCityName("Kiev");
+        startOpenWeatherServiceByCityName("Tokyo");
     }
 
     private void setMianViews(Cursor c) {

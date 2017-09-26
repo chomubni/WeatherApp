@@ -31,10 +31,6 @@ import static com.example.ivan.weatherapp.database.OpenWeaterContract.*;
 public class OpenWeatherService extends IntentService {
 
     private static final String KEY = "d2a6b21c943e38d9e44edcc03c9912ad";
-    public static final String EXTRA_CITY_NAME = "city_name";
-    public static final String EXTRA_CITY_MIN_TEMP = "min_temp";
-    public static final String EXTRA_CITY_MAX_TEMP = "max_temp";
-    public static final String EXTRA_WEATHER_ICON_ID = "weather_icon_id";
     private OpenWeatherHelper mOpenWeatherHelper;
     SQLiteDatabase mDatabase;
 
@@ -54,7 +50,6 @@ public class OpenWeatherService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        //mCityName = intent.getExtras().getString(MainActivity.EXTRA_CITY_NAME);
         makeRequestByCityName(mCityName);
     }
 
